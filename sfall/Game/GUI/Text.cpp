@@ -21,6 +21,20 @@ namespace gui
 namespace sf = sfall;
 
 // Returns the position of the newline character, or the position of the character within the specified width (implementation from HRP)
+static bool IsCp949Lead(unsigned char ch) {
+	if (ch == 149) return false; // Fallout UI console bullet.
+	return (ch >= 0x81 && ch <= 0xFE);
+}
+
+static bool IsCp949Trail(unsigned char ch) {
+	return ((ch >= 0x41 && ch <= 0x5A) || (ch >= 0x61 && ch <= 0x7A) || (ch >= 0x81 && ch <= 0xFE));
+}
+
+static long GetCp949CharWidth(const char* text) {
+	char pair[3] = {text[0], text[1], 0};
+	return fo::util::GetTextWidth(pair);
+}
+
 static long GetPositionWidth(const char* text, long width, bool lineBreak) {
 	long gapWidth;
 	__asm {
@@ -32,21 +46,32 @@ static long GetPositionWidth(const char* text, long width, bool lineBreak) {
 	long position = 0;
 	long w = 0;
 
-	char c = text[position];
-	while (c) {
+	while (text[position]) {
+		unsigned char c = static_cast<unsigned char>(text[position]);
 		if (lineBreak && c == '\\' && text[position + 1] == 'n') return position;
 
-		if (c != ' ') wordCharCount++; else wordCharCount = 0;
+		long charLen = 1;
+		long charWidth = fo::util::GetCharWidth(c);
+		if (IsCp949Lead(c) && IsCp949Trail(static_cast<unsigned char>(text[position + 1]))) {
+			charLen = 2;
+			charWidth = GetCp949CharWidth(&text[position]);
+			wordCharCount = 0; // Korean text can wrap between syllables.
+		} else if (c != ' ') {
+			wordCharCount++;
+		} else {
+			wordCharCount = 0;
+		}
 
-		w += gapWidth + fo::util::GetCharWidth(c);
+		w += gapWidth + charWidth;
 		if (w > width) {
+			if (position == 0) return charLen;
 			// set the position to the beginning of the current word
 			if (wordCharCount > 1 && ((wordCharCount - 1) != position)) {
 				position -= wordCharCount; // position at the space char
 			}
 			break;
 		}
-		c = text[++position];
+		position += charLen;
 	}
 	return position;
 }

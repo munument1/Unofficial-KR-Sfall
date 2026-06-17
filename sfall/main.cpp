@@ -50,6 +50,7 @@
 #include "Modules\Inventory.h"
 #include "Modules\Karma.h"
 #include "Modules\KillCounter.h"
+#include "Modules\KoreanText.h"
 #include "Modules\LoadGameHook.h"
 #include "Modules\LoadOrder.h"
 #include "Modules\MainLoopHook.h"
@@ -161,6 +162,7 @@ static void InitModules() {
 	manager.add<KillCounter>();
 
 	manager.add<MainMenu>();
+	manager.add<KoreanText>();
 	manager.add<HeroAppearance>();
 	manager.add<TalkingHeads>();
 	manager.add<ScriptShaders>();

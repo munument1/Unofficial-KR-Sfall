@@ -132,7 +132,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ShowProgress>LinkVerbose</ShowProgress>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\;$(ProjectDir)..\..\_tmp_DXSDK_Collection\DXSDK_Aug2007\Lib\x86\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)postbuild.cmd" debug "$(TargetPath)"</Command>
@@ -197,7 +197,7 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\;$(ProjectDir)..\..\_tmp_DXSDK_Collection\DXSDK_Aug2007\Lib\x86\</AdditionalLibraryDirectories>
       <AdditionalOptions>/EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -263,7 +263,7 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\;$(ProjectDir)..\..\_tmp_DXSDK_Collection\DXSDK_Aug2007\Lib\x86\</AdditionalLibraryDirectories>
       <AdditionalOptions>/EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -330,7 +330,7 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86\;$(ProjectDir)..\..\_tmp_DXSDK_Collection\DXSDK_Aug2007\Lib\x86\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>"$(ProjectDir)postbuild.cmd" devxp "$(TargetPath)"</Command>
@@ -478,6 +478,7 @@
     <ClInclude Include="InputFuncs.h" />
     <ClInclude Include="Modules\Inventory.h" />
     <ClInclude Include="Modules\KillCounter.h" />
+    <ClInclude Include="Modules\KoreanText.h" />
     <ClInclude Include="Modules\Combat.h" />
     <ClInclude Include="Modules\LoadGameHook.h" />
     <ClInclude Include="Modules\MainMenu.h" />
@@ -600,6 +601,7 @@
     <ClCompile Include="Modules\HookScripts.cpp" />
     <ClCompile Include="Modules\Inventory.cpp" />
     <ClCompile Include="Modules\KillCounter.cpp" />
+    <ClCompile Include="Modules\KoreanText.cpp" />
     <ClCompile Include="Modules\Combat.cpp" />
     <ClCompile Include="Modules\LoadGameHook.cpp" />
     <ClCompile Include="main.cpp" />
