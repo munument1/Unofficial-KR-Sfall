@@ -26,10 +26,7 @@
 
 ### 참고: 기존(순정) sfall 설치 방법
 - [sfall 공식 릴리즈 아카이브](https://sourceforge.net/projects/sfall/files/)에서 `sfall_*.7z` 파일을 다운로드합니다.
-- `ddraw.dll`, `ddraw.ini`, `sfall.dat` 및 `mods` 폴더를 Fallout 기본 디렉터리(`fallout2.exe`가 있는 폴더)에 압축 해제합니다. 이전 버전에서 업데이트하는 경우, Fallout의 `data\scripts\` 디렉터리에서 `gl_highlighting.int` 및 `gl_partycontrol.int` 파일을 삭제하십시오.
-- **중요 참고 사항:** 이미 sfall이 포함된 모드(예: killap의 [Unofficial Patch](https://github.com/BGforgeNet/Fallout2_Unofficial_Patch) 또는 [Restoration Project](https://github.com/BGforgeNet/Fallout2_Restoration_Project))를 사용하는 경우, 해당 모드에는 커스텀 수정된 `ddraw.ini`가 포함되어 있을 수 있습니다. 이 경우 해당 파일을 순정 sfall의 `ddraw.ini`로 덮어쓰면 게임이 정상적으로 실행되지 않을 수 있습니다. 대신 `ddraw.dll` 파일만 덮어쓰고, 기존 모드의 `ddraw.ini` 파일은 그대로 유지하십시오. (직접 수동으로 두 파일의 변경 사항을 병합할 수도 있습니다.)
-- `translations` 폴더에는 게임 내에 표시되는 sfall의 일부 문자열 번역본들이 들어 있습니다. 번역본을 사용하려면 이 폴더를 Fallout 기본 디렉터리에 복사한 후, `ddraw.ini` 파일의 **TranslationsINI** 설정을 `.\translations\<원하는 언어>.ini`로 변경하면 됩니다.
-
+- `ddraw.dll`를 Fallout 기본 디렉터리(`fallout2.exe`가 있는 폴더)에 압축 해제합니다. 이전 버전에서 업데이트하는 경우, Fallout의 `data\scripts\` 디렉터리에서 `gl_highlighting.int` 및 `gl_partycontrol.int` 파일을 삭제하십시오.
 ---
 
 ## 설정법 (Configuration)
