@@ -1,40 +1,43 @@
-# sfall
+# sfall (한글판)
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Dev Build](https://github.com/sfall-team/sfall/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/phobos2077/sfall/actions/workflows/build.yml)
 [![GitHub Pages](https://github.com/sfall-team/sfall/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/phobos2077/sfall/actions/workflows/gh-pages.yml)
 
-A set of engine modifications for the classic game Fallout 2 in the form of a DLL, which modifies executable in memory without changing anything in EXE file itself.
+본 프로젝트는 클래식 게임 Fallout 2를 위한 엔진 수정 DLL 패키지(sfall)의 비공식 한국어 지원 포크입니다. EXE 파일 자체를 변경하지 않고 메모리 상에서 실행 파일을 직접 수정하여 작동하며, 한국어 출력 및 다양한 편의성 기능을 제공합니다.
 
-**Engine modifications include:**
-- Better support for modern operating systems
-- Externalizing many settings like starting map and game time, skills, perks, critical hit tables, books, etc.
-- Bug fixes
-- Many additional features for users, such as item highlight button, party member control, etc.
-- Extended scripting capabilities for modders (many new opcodes to control sfall features as well as previously unavailable vanilla engine functions)
+**엔진 수정 사항 및 주요 기능:**
+- 최신 운영체제(Windows 10/11 등) 환경에서의 안정적인 실행 및 호환성 지원
+- 시작 맵, 게임 시간, 기술(Skill), 퍽(Perk), 치명타 테이블, 서적 등 다양한 시스템 설정을 외부 파일로 커스터마이징 가능
+- 바닐라 엔진의 버그 수정
+- 아이템 강조 표시(Shift 키), 동료 직접 제어 기능 등 사용자 편의성 기능 대거 추가
+- 모더를 위한 스크립팅 기능 확장 (sfall 기능을 제어하는 다양한 신규 Opcode 및 바닐라 엔진의 미공개 내부 함수 사용 가능)
 
-Original author: **Timeslip**
+원작자: **Timeslip**
 
-Original description: A set of engine modifications for the classic game Fallout 2 by Interplay. Includes fixes for bugs in the original engine, allows Fallout to run correctly on modern operating systems, and adds additional features for modders.
-
-## Installation (설치 방법)
-
-### English
-- The release package of **Unofficial-KR-Sfall** contains **`ddraw.dll` and the `data\fonts\korean\` folder** (containing font files).
-- Copy `ddraw.dll` and the `data` folder, and extract/overwrite them in your Fallout 2 / Fallout Sonora root directory (where `fallout2.exe` resides).
-
-### Korean (한국어)
-- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일과 `data\fonts\korean\` 폴더**(폰트 파일 포함)가 함께 들어있습니다.
-- `ddraw.dll` 파일과 `data` 폴더를 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 그대로 복사 및 덮어씌웁니다.
+원문 설명: Interplay사 클래식 게임 Fallout 2의 엔진 수정 툴셋입니다. 원본 엔진의 버그 수정, 최신 운영체제에서의 정상 실행 지원, 모더들을 위한 다양한 추가 기능들을 탑재하고 있습니다.
 
 ---
 
-## Configuration (설정법)
+## 설치 방법 (Installation)
 
-To enable Korean rendering and load the translation correctly, you must edit two configuration files in your game directory:
+- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일과 `data\fonts\korean\` 폴더**(폰트 파일 포함)가 함께 포함되어 있습니다.
+- `ddraw.dll` 파일과 `data` 폴더를 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 그대로 복사 및 덮어씌웁니다.
+
+### 참고: 기존(순정) sfall 설치 방법
+- [sfall 공식 릴리즈 아카이브](https://sourceforge.net/projects/sfall/files/)에서 `sfall_*.7z` 파일을 다운로드합니다.
+- `ddraw.dll`, `ddraw.ini`, `sfall.dat` 및 `mods` 폴더를 Fallout 기본 디렉터리(`fallout2.exe`가 있는 폴더)에 압축 해제합니다. 이전 버전에서 업데이트하는 경우, Fallout의 `data\scripts\` 디렉터리에서 `gl_highlighting.int` 및 `gl_partycontrol.int` 파일을 삭제하십시오.
+- **중요 참고 사항:** 이미 sfall이 포함된 모드(예: killap의 [Unofficial Patch](https://github.com/BGforgeNet/Fallout2_Unofficial_Patch) 또는 [Restoration Project](https://github.com/BGforgeNet/Fallout2_Restoration_Project))를 사용하는 경우, 해당 모드에는 커스텀 수정된 `ddraw.ini`가 포함되어 있을 수 있습니다. 이 경우 해당 파일을 순정 sfall의 `ddraw.ini`로 덮어쓰면 게임이 정상적으로 실행되지 않을 수 있습니다. 대신 `ddraw.dll` 파일만 덮어쓰고, 기존 모드의 `ddraw.ini` 파일은 그대로 유지하십시오. (직접 수동으로 두 파일의 변경 사항을 병합할 수도 있습니다.)
+- `translations` 폴더에는 게임 내에 표시되는 sfall의 일부 문자열 번역본들이 들어 있습니다. 번역본을 사용하려면 이 폴더를 Fallout 기본 디렉터리에 복사한 후, `ddraw.ini` 파일의 **TranslationsINI** 설정을 `.\translations\<원하는 언어>.ini`로 변경하면 됩니다.
+
+---
+
+## 설정법 (Configuration)
+
+한글 폰트 렌더링 및 번역 데이터를 정상적으로 불러오기 위해서는 게임 디렉터리에 있는 두 개의 설정 파일을 다음과 같이 수정해야 합니다:
 
 ### 1. `ddraw.ini` 설정 추가
-Open `ddraw.ini` with a text editor, search for the `[Main]` section, and add the following block to configure the Korean Text Renderer, GDI face names, and rendering dimensions:
+텍스트 편집기(메모장 등)로 `ddraw.ini` 파일을 열어 `[Main]` 섹션을 찾은 후, 아래 내용을 추가하여 한글 텍스트 렌더러 활성화, GDI 폰트명 및 렌더링 영역 크기를 설정합니다:
 
 ```ini
 [Main]
@@ -68,7 +71,7 @@ KoreanTextGnwFontWeight=700
 ```
 
 ### 2. `fallout2.cfg` 설정 수정
-Open `fallout2.cfg` with a text editor, look for the `[system]` section, and modify the `language` setting to `korean` so the engine loads assets from `data\text\korean\` instead of `data\text\english\`:
+텍스트 편집기로 `fallout2.cfg` 파일을 열어 `[system]` 섹션의 `language` 설정을 `korean`으로 변경합니다. 이렇게 하면 엔진이 기존 `data\text\english\` 대신 `data\text\korean\` 폴더의 번역 데이터를 불러옵니다:
 
 ```ini
 [system]
@@ -76,50 +79,55 @@ Open `fallout2.cfg` with a text editor, look for the `[system]` section, and mod
 language=korean
 ```
 
-## Uninstallation
+---
 
-Delete `ddraw.dll`, `ddraw.ini`, and `sfall.dat` from your Fallout directory, and delete `sfall-mods.ini` from the `mods` folder.
+## 제거 방법 (Uninstallation)
 
-## Usage
+Fallout 설치 디렉터리에서 `ddraw.dll`, `ddraw.ini`, `sfall.dat` 파일을 삭제하고, `mods` 폴더 내의 `sfall-mods.ini` 파일을 삭제하십시오.
 
-This mod is configured via the `ddraw.ini` and `sfall-mods.ini` files, which can be opened with any text editor. Details of every configerable option are included in those files. Where a comment refers to a DX scancode, the complete list of codes can be found at the link below:\
+---
+
+## 사용 방법 (Usage)
+
+이 모드는 텍스트 편집기(메모장 등)로 열 수 있는 `ddraw.ini` 및 `sfall-mods.ini` 파일을 통해 설정할 수 있습니다. 각 설정 옵션에 대한 상세한 설명은 해당 파일들의 주석에 적혀 있습니다. 주석에서 DX 스캔코드(scancode)를 참조하는 경우, 전체 코드 목록은 아래 링크에서 확인할 수 있습니다:
 https://kippykip.com/b3ddocs/commands/scancodes.htm
 
-In a default installation using an unmodified copy of `ddraw.ini`, the middle mouse button will be set to switch between weapons and the mouse wheel will be set to scroll through any menus that respond to the up/down arrow keys. Holding **Ctrl** and hitting numpad keys 0 to 6 (with Num Lock off) will adjust the game speed. Holding **left Ctrl** will let you move items between inventory lists by simply clicking on them. Pressing **left Shift** will highlight items on the ground, and holding the key will let you move an entire stack of items at once. The script extender and any engine fixes are also enabled. Most of the options that change gameplay in some way not originally intended by the developers are disabled.
+수정되지 않은 기본 `ddraw.ini` 파일을 사용하는 초기 상태에서는 마우스 가운데 버튼으로 무기 전환이 가능하며, 마우스 휠을 통해 위/아래 방향키가 연동되는 모든 메뉴를 스크롤할 수 있습니다. **Ctrl**을 누른 상태에서 숫자 키패드 0~6(Num Lock 해제 상태)을 누르면 게임 속도가 조절됩니다. **왼쪽 Ctrl**을 누른 채로 인벤토리 아이템을 클릭하면 인벤토리 목록 간에 아이템을 한 번에 이동할 수 있습니다. **왼쪽 Shift**를 누르면 바닥에 있는 아이템들이 강조 표시되며, 키를 꾹 누르고 있으면 한 번에 아이템 묶음 전체를 이동할 수 있습니다. 스크립트 확장 엔진 및 각종 엔진 수정 기능들도 기본적으로 활성화되어 있습니다. 개발자가 원래 의도하지 않은 방식으로 게임 플레이를 변경하는 대부분의 비바닐라적 옵션들은 기본적으로 비활성화되어 있습니다.
 
-For [__Wine__](https://www.winehq.org/) users:\
-You need to set DLL overrides for `ddraw.dll` to __"native, builtin"__ in `winecfg` or use `WINEDLLOVERRIDES="ddraw=n,b"` to run Fallout from the command line. If you want to play alternative sound files, you'll also need to install GStreamer Good 32-bit plugins.
+[__Wine__](https://www.winehq.org/) (리눅스/맥) 사용자 참고 사항:
+`winecfg`에서 `ddraw.dll`에 대한 DLL 재정의(DLL overrides)를 **"네이티브, 내장(native, builtin)"**으로 설정하거나, 커맨드 라인에서 `WINEDLLOVERRIDES="ddraw=n,b"` 환경변수를 주어 실행해야 합니다. 만약 다른 사운드 파일을 재생하려면 GStreamer Good 32비트 플러그인도 함께 설치해야 합니다.
 
-## Build Instructions
+---
 
-### Prerequisites:
+## 빌드 방법 (Build Instructions)
 
-* Visual Studio 2015 with **"Windows XP support for C++"** component. If you're using Visual Studio 2017/2019/2022, make sure to install **"VC++ 2015.3 v14.00 (v140) toolset for desktop"** component as well.
-* [DirectX SDK (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=6812). You will also need `ddraw.lib` from DXSDK February 2010 and `dinput.lib` from DXSDK August 2007. Both files can be found in the [DirectX SDK Collection repo](https://github.com/NovaRain/DXSDK_Collection).
-* [DirectX Runtime (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=8109). You can also install it from DirectX SDK installer.
+### 필수 요구사항 (Prerequisites)
+* **"C++용 Windows XP 지원"** 구성요소가 포함된 Visual Studio 2015. 만약 Visual Studio 2017/2019/2022 버전을 사용 중이라면 **"VC++ 2015.3 v14.00 (v140) 데스크톱용 도구 세트"** 구성요소도 추가로 설치해야 합니다.
+* [DirectX SDK (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=6812). 또한, DXSDK February 2010의 `ddraw.lib` 파일과 DXSDK August 2007의 `dinput.lib` 파일이 추가로 필요합니다. 이 두 파일은 [DirectX SDK Collection 저장소](https://github.com/NovaRain/DXSDK_Collection)에서 다운로드할 수 있습니다.
+* [DirectX Runtime (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=8109). DirectX SDK 설치 관리자를 통해서도 설치할 수 있습니다.
 
-### Steps:
+### 빌드 단계 (Steps)
+1. 저장소 템플릿을 사용하여 `postbuild.cmd` 파일을 설정합니다.
+2. Visual Studio로 솔루션 파일(`ddraw.sln`)을 열고 **ReleaseXP** 구성(sfall 배포판 릴리즈 빌드 구성)으로 빌드합니다.
+3. 빌드가 정상 완료되면 Fallout 2 게임 디렉터리에 새로운 sfall `ddraw.dll` 파일이 복사/생성됩니다.
 
-1. Set up a `postbuild.cmd` using the template from the repo.
-2. Open the solution file and build with the **ReleaseXP** configuration (this is the one used for sfall releases).
-3. If everything is set up correctly, you should have a new sfall `ddraw.dll` in your Fallout 2 directory.
-
-### Minimalist Setup:
-
-If you don't need a full-fledged IDE, you can use Visual Studio Build Tools instead. Taking [Visual Studio 2017 Build Tools](https://aka.ms/vs/15/release/vs_buildtools.exe) for example:
-1. Install using the command line:
-   ```
+### 커맨드 라인 빌드 환경 (Minimalist Setup)
+Full IDE(Visual Studio)가 필요하지 않은 경우, Visual Studio Build Tools를 사용할 수 있습니다. (예: Visual Studio 2017 Build Tools 기준)
+1. 명령 프롬프트(CMD)를 통해 아래 명령어로 필요한 도구를 설치합니다:
+   ```cmd
    vs_BuildTools.exe --add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Workload.MSBuildTools --add Microsoft.VisualStudio.Component.VC.140 --add Microsoft.VisualStudio.Component.WinXP --add Microsoft.VisualStudio.ComponentGroup.NativeDesktop.WinXP --passive
    ```
-2. Set up a `postbuild.cmd` using the template from the repo.
-3. Use MSBuild in **x86 Native Tools Command Prompt** to build sfall:
-   ```
+2. 저장소 템플릿을 사용하여 `postbuild.cmd` 파일을 설정합니다.
+3. **x86 Native Tools Command Prompt** 창을 열고 MSBuild를 실행하여 빌드합니다:
+   ```cmd
    MSBuild.exe ddraw.sln /t:Clean;Build /p:Configuration=ReleaseXP /p:Platform=Win32
    ```
 
-## Additional info
+---
 
-* [Changelog](CHANGELOG.md)
-* [Scripting Documentation](https://sfall-team.github.io/sfall/)
-* Fallout Engine IDA Database: [for IDA Pro 6.8](https://www.dropbox.com/s/tm0nyx0lnk4yui0/Fallout_1_and_2_IDA68.rar?dl=1 "Download from Dropbox") | [for IDA Pro 7.0](https://www.dropbox.com/s/61srq09pn8grfpu/Fallout_1_and_2_IDA70.rar?dl=1 "Download from Dropbox") (comments are in Russian)
-* [Fallout 2 Reference Edition](https://github.com/alexbatalov/fallout2-re)
+## 추가 정보 (Additional info)
+
+* [변경 사항 (Changelog)](CHANGELOG.md)
+* [스크립팅 가이드 문서 (Scripting Documentation)](https://sfall-team.github.io/sfall/)
+* Fallout 엔진 IDA 데이터베이스: [IDA Pro 6.8용](https://www.dropbox.com/s/tm0nyx0lnk4yui0/Fallout_1_and_2_IDA68.rar?dl=1) | [IDA Pro 7.0용](https://www.dropbox.com/s/61srq09pn8grfpu/Fallout_1_and_2_IDA70.rar?dl=1) (주석은 러시아어로 작성되어 있습니다)
+* [Fallout 2 레퍼런스 에디션 (Reference Edition)](https://github.com/alexbatalov/fallout2-re)
