@@ -149,7 +149,15 @@ static GlyphBitmap& GetKoreanGlyph(wchar_t ch, long pixelHeight) {
 	auto it = glyphCache.find(key);
 	if (it != glyphCache.end()) return it->second;
 
-	EnsureGdiFont(pixelHeight);
+	long cellWidth = KoreanCellWidth(pixelHeight);
+	long cellHeight = KoreanRenderHeight(pixelHeight);
+	if (cellWidth <= 0) cellWidth = 1;
+	if (cellHeight <= 0) cellHeight = 1;
+
+	// 2x Supersampling Scale Factor
+	const long scale = 2;
+
+	EnsureGdiFont(pixelHeight * scale);
 
 	HDC dc = CreateCompatibleDC(nullptr);
 	HGDIOBJ oldFont = SelectObject(dc, hFont);
@@ -159,19 +167,21 @@ static GlyphBitmap& GetKoreanGlyph(wchar_t ch, long pixelHeight) {
 	TEXTMETRICW tm = {};
 	GetTextMetricsW(dc, &tm);
 
-	long cellWidth = KoreanCellWidth(pixelHeight);
-	long cellHeight = KoreanRenderHeight(pixelHeight);
-	if (cellWidth <= 0) cellWidth = 1;
-	if (cellHeight <= 0) cellHeight = 1;
-	if (size.cx <= 0) size.cx = cellWidth;
-	if (size.cy <= 0) size.cy = cellHeight;
-	long bitmapHeight = cellHeight;
-	if (bitmapHeight < tm.tmHeight + 2) bitmapHeight = tm.tmHeight + 2;
+	if (size.cx <= 0) size.cx = cellWidth * scale;
+	if (size.cy <= 0) size.cy = cellHeight * scale;
+
+	long targetBitmapHeight = cellHeight;
+	if (targetBitmapHeight < (tm.tmHeight / scale) + 2) {
+		targetBitmapHeight = (tm.tmHeight / scale) + 2;
+	}
+
+	long hiWidth = cellWidth * scale;
+	long hiHeight = targetBitmapHeight * scale;
 
 	BITMAPINFO bmi = {};
 	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bmi.bmiHeader.biWidth = cellWidth;
-	bmi.bmiHeader.biHeight = -bitmapHeight;
+	bmi.bmiHeader.biWidth = hiWidth;
+	bmi.bmiHeader.biHeight = -hiHeight;
 	bmi.bmiHeader.biPlanes = 1;
 	bmi.bmiHeader.biBitCount = 32;
 	bmi.bmiHeader.biCompression = BI_RGB;
@@ -180,39 +190,51 @@ static GlyphBitmap& GetKoreanGlyph(wchar_t ch, long pixelHeight) {
 	HBITMAP dib = CreateDIBSection(dc, &bmi, DIB_RGB_COLORS, &bits, nullptr, 0);
 	HGDIOBJ oldBitmap = SelectObject(dc, dib);
 
-	RECT rect = {0, 0, cellWidth, bitmapHeight};
+	RECT rect = {0, 0, hiWidth, hiHeight};
 	FillRect(dc, &rect, static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH)));
 	SetBkMode(dc, OPAQUE);
 	SetBkColor(dc, RGB(0, 0, 0));
 	SetTextColor(dc, RGB(255, 255, 255));
 
-	long x = (cellWidth - size.cx) / 2;
-	long y = (bitmapHeight - tm.tmHeight) / 2;
+	long x = (hiWidth - size.cx) / 2;
+	long y = (hiHeight - tm.tmHeight) / 2;
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
 	TextOutW(dc, x, y, &ch, 1);
 
 	GlyphBitmap glyph;
 	glyph.width = cellWidth;
-	glyph.height = bitmapHeight;
-	glyph.mask.resize(cellWidth * bitmapHeight);
+	glyph.height = targetBitmapHeight;
+	glyph.mask.resize(cellWidth * targetBitmapHeight);
 
 	const BYTE* src = static_cast<const BYTE*>(bits);
-	for (long y = 0; y < bitmapHeight; y++) {
-		for (long x = 0; x < cellWidth; x++) {
-			const BYTE* px = src + ((y * cellWidth + x) * 4);
-			glyph.mask[y * cellWidth + x] = (px[0] || px[1] || px[2]) ? 9 : 0;
+	for (long ty = 0; ty < targetBitmapHeight; ty++) {
+		for (long tx = 0; tx < cellWidth; tx++) {
+			long sumGray = 0;
+			for (long sy = 0; sy < scale; sy++) {
+				for (long sx = 0; sx < scale; sx++) {
+					long hix = tx * scale + sx;
+					long hiy = ty * scale + sy;
+					const BYTE* px = src + ((hiy * hiWidth + hix) * 4);
+					long gray = (static_cast<long>(px[0]) + px[1] + px[2]) / 3;
+					sumGray += gray;
+				}
+			}
+			long avgGray = sumGray / (scale * scale);
+			// Map to 0..9 range for Fallout 2's alpha blend table
+			long mask = (avgGray * 9 + 127) / 255;
+			glyph.mask[ty * cellWidth + tx] = static_cast<BYTE>(mask);
 		}
 	}
 
 	if (profile.extraBoldRadius > 0) {
 		std::vector<BYTE> thickMask = glyph.mask;
-		for (long y = 0; y < cellHeight; y++) {
+		for (long y = 0; y < targetBitmapHeight; y++) {
 			for (long x = 0; x < cellWidth; x++) {
 				if (!glyph.mask[y * cellWidth + x]) continue;
 				for (long dy = -profile.extraBoldRadius; dy <= profile.extraBoldRadius; dy++) {
 					long yy = y + dy;
-					if (yy < 0 || yy >= cellHeight) continue;
+					if (yy < 0 || yy >= targetBitmapHeight) continue;
 					for (long dx = -profile.extraBoldRadius; dx <= profile.extraBoldRadius; dx++) {
 						long xx = x + dx;
 						if (xx < 0 || xx >= cellWidth) continue;
