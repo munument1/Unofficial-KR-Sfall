@@ -20,14 +20,12 @@ Original description: A set of engine modifications for the classic game Fallout
 ## Installation (설치 방법)
 
 ### English
-- The release package of **Unofficial-KR-Sfall** contains **only `ddraw.dll`**.
-- Copy the `ddraw.dll` file and overwrite it in your Fallout 2 / Fallout Sonora root directory (where `fallout2.exe` resides).
-- Ensure your Korean translation font files (e.g., `ChungjuKimSaeng.ttf`, `NanumSquareNeo-aLt.ttf`, `NanumSquareNeo-cBd.ttf`) are placed in `data\fonts\korean\`.
+- The release package of **Unofficial-KR-Sfall** contains **`ddraw.dll` and the `data\fonts\korean\` folder** (containing font files).
+- Copy `ddraw.dll` and the `data` folder, and extract/overwrite them in your Fallout 2 / Fallout Sonora root directory (where `fallout2.exe` resides).
 
 ### Korean (한국어)
-- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일만 포함**되어 있습니다.
-- 빌드된 `ddraw.dll` 파일을 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 덮어씌웁니다.
-- 한국어 출력용 폰트 파일들(예: `ChungjuKimSaeng.ttf`, `NanumSquareNeo-aLt.ttf`, `NanumSquareNeo-cBd.ttf`)이 `data\fonts\korean\` 경로에 있는지 확인해 주세요.
+- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일과 `data\fonts\korean\` 폴더**(폰트 파일 포함)가 함께 들어있습니다.
+- `ddraw.dll` 파일과 `data` 폴더를 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 그대로 복사 및 덮어씌웁니다.
 
 ---
 
