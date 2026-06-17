@@ -17,16 +17,66 @@ Original author: **Timeslip**
 
 Original description: A set of engine modifications for the classic game Fallout 2 by Interplay. Includes fixes for bugs in the original engine, allows Fallout to run correctly on modern operating systems, and adds additional features for modders.
 
-## Installation
+## Installation (설치 방법)
 
-- Download `sfall_*.7z` from the [release archive](https://sourceforge.net/projects/sfall/files/).
+### English
+- The release package of **Unofficial-KR-Sfall** contains **only `ddraw.dll`**.
+- Copy the `ddraw.dll` file and overwrite it in your Fallout 2 / Fallout Sonora root directory (where `fallout2.exe` resides).
+- Ensure your Korean translation font files (e.g., `ChungjuKimSaeng.ttf`, `NanumSquareNeo-aLt.ttf`, `NanumSquareNeo-cBd.ttf`) are placed in `data\fonts\korean\`.
 
-- Extract `ddraw.dll`, `ddraw.ini`, `sfall.dat`, and the `mods` folder to Fallout's base directory (i.e. the one that contains `fallout2.exe`). Also, remove `gl_highlighting.int` and `gl_partycontrol.int` from Fallout's `data\scripts\` directory if you are updating from an older version.
+### Korean (한국어)
+- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일만 포함**되어 있습니다.
+- 빌드된 `ddraw.dll` 파일을 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 덮어씌웁니다.
+- 한국어 출력용 폰트 파일들(예: `ChungjuKimSaeng.ttf`, `NanumSquareNeo-aLt.ttf`, `NanumSquareNeo-cBd.ttf`)이 `data\fonts\korean\` 경로에 있는지 확인해 주세요.
 
-- __Important Note:__\
-  If you are using a mod that already included sfall (e.g. killap's [Unofficial Patch](https://github.com/BGforgeNet/Fallout2_Unofficial_Patch) or [Restoration Project](https://github.com/BGforgeNet/Fallout2_Restoration_Project)), then that mod has probably included a custom modified `ddraw.ini`. In that case, overwriting it with sfall's vanilla `ddraw.ini` will be likely break your game. Instead, only overwrite `ddraw.dll`, and keep the mod's existing copy of `ddraw.ini`. (Or, if you know what you're doing, you can merge them together by hand.)
+---
 
-- The folder `translations` contains translations of some of the strings that sfall displays in the game. To use a translation, copy this folder to Fallout's base directory too, and then in `ddraw.ini` change the __TranslationsINI__ setting to `.\translations\<your language>.ini`.
+## Configuration (설정법)
+
+To enable Korean rendering and load the translation correctly, you must edit two configuration files in your game directory:
+
+### 1. `ddraw.ini` 설정 추가
+Open `ddraw.ini` with a text editor, search for the `[Main]` section, and add the following block to configure the Korean Text Renderer, GDI face names, and rendering dimensions:
+
+```ini
+[Main]
+; Enable the Korean Text Renderer (0 = disabled, 1 = enabled)
+KoreanText=1
+KoreanTextButtonThreshold=16
+
+; 1. Small Font (Dialog text, log messages)
+KoreanTextTextFontFile=data\fonts\korean\NanumSquareNeo-aLt.ttf
+KoreanTextTextFontFace=NanumSquare Neo Light
+KoreanTextTextFontHeight=10
+KoreanTextTextCellWidth=10
+KoreanTextTextRenderHeight=11
+KoreanTextTextFontWeight=400
+
+; 2. Large UI Font (Dialog headers, standard buttons)
+KoreanTextFontFile=data\fonts\korean\ChungjuKimSaeng.ttf
+KoreanTextFontFace=ChungjuKimSaeng TTF
+KoreanTextFontHeight=17
+KoreanTextCellWidth=19
+KoreanTextRenderHeight=25
+KoreanTextFontWeight=700
+
+; 3. GNW UI Font (Main Menu titles, custom buttons)
+KoreanTextGnwFontFile=data\fonts\korean\ChungjuKimSaeng.ttf
+KoreanTextGnwFontFace=ChungjuKimSaeng TTF
+KoreanTextGnwFontHeight=17
+KoreanTextGnwCellWidth=19
+KoreanTextGnwRenderHeight=25
+KoreanTextGnwFontWeight=700
+```
+
+### 2. `fallout2.cfg` 설정 수정
+Open `fallout2.cfg` with a text editor, look for the `[system]` section, and modify the `language` setting to `korean` so the engine loads assets from `data\text\korean\` instead of `data\text\english\`:
+
+```ini
+[system]
+; Set the game assets language directory to Korean
+language=korean
+```
 
 ## Uninstallation
 
