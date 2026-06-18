@@ -40,11 +40,11 @@ Windows에 설치된 폰트를 사용하려면 `*FontFile` 값을 비워두고 `
 
 ```ini
 [Main]
-; Enable the Korean Text Renderer (0 = disabled, 1 = enabled)
+; 한글 텍스트 렌더러 사용 여부 (0 = 끔, 1 = 켬)
 KoreanText=1
 KoreanTextButtonThreshold=16
 
-; 1. Small Font (Dialog text, log messages)
+; 1. 작은 글꼴 (대화문, 로그 메시지)
 KoreanTextTextFontFile=
 KoreanTextTextFontFace=Malgun Gothic
 KoreanTextTextFontHeight=10
@@ -54,7 +54,7 @@ KoreanTextTextYOffset=0
 KoreanTextTextFontWeight=400
 KoreanTextTextExtraBold=0
 
-; 2. Large UI Font (Dialog headers, standard buttons)
+; 2. 큰 UI 글꼴 (대화 제목, 일반 버튼)
 KoreanTextFontFile=
 KoreanTextFontFace=Malgun Gothic
 KoreanTextFontHeight=17
@@ -64,7 +64,7 @@ KoreanTextYOffset=0
 KoreanTextFontWeight=700
 KoreanTextExtraBold=0
 
-; 3. GNW UI Font (Main Menu titles, custom buttons)
+; 3. GNW UI 글꼴 (메인 메뉴 제목, 커스텀 버튼)
 KoreanTextGnwFontFile=
 KoreanTextGnwFontFace=Malgun Gothic
 KoreanTextGnwFontHeight=17
@@ -87,7 +87,7 @@ KoreanTextTextFontFace=Malgun Gothic
 
 ```ini
 [system]
-; Set the game assets language directory to Korean
+; 게임 데이터 언어 폴더를 korean으로 설정
 language=korean
 ```
 
