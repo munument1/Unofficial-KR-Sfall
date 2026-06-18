@@ -36,50 +36,39 @@
 ### 1. `LangFont.ini` 설정
 `LangFont.ini` 파일을 `ddraw.dll`과 같은 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 둡니다. `ddraw.ini`에는 한글 폰트 설정을 추가하지 않습니다.
 
-Windows에 설치된 폰트를 사용하려면 `*FontFile` 값을 비워두고 `*FontFace`에 설치된 폰트 이름을 입력합니다. 별도 폰트 파일을 사용하려면 `*FontFile`에 게임 폴더 기준 상대 경로 또는 절대 경로를 입력합니다.
+Windows에 설치된 폰트를 사용하려면 `Name`에 폰트 이름을 그대로 입력합니다. 예를 들어 `돋움`, `맑은 고딕`, `궁서`, `바탕`처럼 한글 폰트명도 사용할 수 있습니다. 별도 폰트 파일을 함께 사용하려면 선택적으로 `File`에 게임 폴더 기준 상대 경로 또는 절대 경로를 입력합니다.
 
 ```ini
-[Main]
+[TEXT]
+; 작은 글꼴 (대화문, 로그 메시지)
+Name=돋움
+Size=11
+Weight=400
+
+[BUTTON]
+; 큰 UI 글꼴 (대화 제목, 일반 버튼)
+Name=돋움
+Size=19
+Weight=5000
+
+[GNW]
+; GNW UI 글꼴 (메인 메뉴 제목, 커스텀 버튼)
+Name=돋움
+Size=19
+Weight=5000
+
+[MISC]
 ; 한글 텍스트 렌더러 사용 여부 (0 = 끔, 1 = 켬)
-KoreanText=1
-KoreanTextButtonThreshold=16
-
-; 1. 작은 글꼴 (대화문, 로그 메시지)
-KoreanTextTextFontFile=
-KoreanTextTextFontFace=Malgun Gothic
-KoreanTextTextFontHeight=10
-KoreanTextTextCellWidth=10
-KoreanTextTextRenderHeight=11
-KoreanTextTextYOffset=0
-KoreanTextTextFontWeight=400
-KoreanTextTextExtraBold=0
-
-; 2. 큰 UI 글꼴 (대화 제목, 일반 버튼)
-KoreanTextFontFile=
-KoreanTextFontFace=Malgun Gothic
-KoreanTextFontHeight=17
-KoreanTextCellWidth=19
-KoreanTextRenderHeight=25
-KoreanTextYOffset=0
-KoreanTextFontWeight=700
-KoreanTextExtraBold=0
-
-; 3. GNW UI 글꼴 (메인 메뉴 제목, 커스텀 버튼)
-KoreanTextGnwFontFile=
-KoreanTextGnwFontFace=Malgun Gothic
-KoreanTextGnwFontHeight=17
-KoreanTextGnwCellWidth=19
-KoreanTextGnwRenderHeight=25
-KoreanTextGnwYOffset=0
-KoreanTextGnwFontWeight=700
-KoreanTextGnwExtraBold=0
+Enable=1
+ButtonThreshold=16
 ```
 
 예를 들어 게임 폴더 밖에 있는 폰트 파일을 직접 지정하려면 다음처럼 절대 경로를 사용할 수 있습니다:
 
 ```ini
-KoreanTextTextFontFile=C:\Windows\Fonts\malgun.ttf
-KoreanTextTextFontFace=Malgun Gothic
+[TEXT]
+Name=맑은 고딕
+File=C:\Windows\Fonts\malgun.ttf
 ```
 
 ### 2. `fallout2.cfg` 설정 수정

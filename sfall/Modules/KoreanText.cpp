@@ -423,29 +423,54 @@ static __declspec(naked) void gnw_text_to_buf_hook() {
 	}
 }
 
-static int GetFontInt(const char* key, int defaultValue) {
-	return IniReader::GetInt("Main", key, defaultValue, langFontIni);
+static int GetFontInt(const char* section, const char* key, int defaultValue) {
+	return IniReader::GetInt(section, key, defaultValue, langFontIni);
 }
 
-static std::string GetFontString(const char* key, const char* defaultValue) {
-	return IniReader::GetString("Main", key, defaultValue, langFontIni);
+static std::string GetFontString(const char* section, const char* key, const char* defaultValue) {
+	return IniReader::GetString(section, key, defaultValue, langFontIni);
 }
 
-static void LoadFace(const char* key, const char* defaultFace, wchar_t* dest) {
-	auto face = GetFontString(key, defaultFace);
+static int GetProfileInt(const char* section, const char* key, const char* legacyKey, int defaultValue) {
+	int legacyValue = GetFontInt("Main", legacyKey, defaultValue);
+	return GetFontInt(section, key, legacyValue);
+}
+
+static std::string GetProfileString(const char* section, const char* key, const char* legacyKey, const char* defaultValue) {
+	auto legacyValue = GetFontString("Main", legacyKey, defaultValue);
+	return GetFontString(section, key, legacyValue.c_str());
+}
+
+static std::wstring ToWideFontString(const std::string& value) {
+	if (value.empty()) return std::wstring();
+
+	int len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.c_str(), -1, nullptr, 0);
+	UINT codePage = (len > 0) ? CP_UTF8 : CP_ACP;
+	len = MultiByteToWideChar(codePage, 0, value.c_str(), -1, nullptr, 0);
+	if (len <= 0) return std::wstring();
+
+	std::wstring wideValue(len, L'\0');
+	MultiByteToWideChar(codePage, 0, value.c_str(), -1, &wideValue[0], len);
+	wideValue.resize(len - 1);
+	return wideValue;
+}
+
+static void LoadProfileFace(const char* section, const char* legacyKey, const char* defaultFace, wchar_t* dest) {
+	auto face = GetProfileString(section, "Name", legacyKey, defaultFace);
+	auto wideFace = ToWideFontString(face);
 	std::memset(dest, 0, sizeof(wchar_t) * LF_FACESIZE);
-	MultiByteToWideChar(CP_ACP, 0, face.c_str(), -1, dest, LF_FACESIZE);
+	if (!wideFace.empty()) {
+		wcsncpy_s(dest, LF_FACESIZE, wideFace.c_str(), LF_FACESIZE - 1);
+	}
 	dest[LF_FACESIZE - 1] = 0;
 }
 
-static void LoadPrivateFontFile(const char* key) {
-	auto path = GetFontString(key, "");
+static void LoadPrivateFontFile(const char* section, const char* legacyKey) {
+	auto path = GetProfileString(section, "File", legacyKey, "");
 	if (path.empty()) return;
 
-	std::wstring widePath(MAX_PATH, L'\0');
-	int len = MultiByteToWideChar(CP_ACP, 0, path.c_str(), -1, &widePath[0], static_cast<int>(widePath.size()));
-	if (len <= 0) return;
-	widePath.resize(len - 1);
+	auto widePath = ToWideFontString(path);
+	if (widePath.empty()) return;
 
 	if (AddFontResourceExW(widePath.c_str(), FR_PRIVATE, nullptr) > 0) {
 		loadedFontFiles.push_back(widePath);
@@ -453,37 +478,37 @@ static void LoadPrivateFontFile(const char* key) {
 }
 
 void KoreanText::init() {
-	enabled = GetFontInt("KoreanText", 0) != 0;
+	enabled = GetFontInt("MISC", "Enable", GetFontInt("Main", "KoreanText", 0)) != 0;
 	if (!enabled || !nonEngLang) return;
 
-	buttonFontThreshold = GetFontInt("KoreanTextButtonThreshold", 16);
+	buttonFontThreshold = GetFontInt("MISC", "ButtonThreshold", GetFontInt("Main", "KoreanTextButtonThreshold", 16));
 
-	textProfile.fontHeight = GetFontInt("KoreanTextTextFontHeight", 11);
-	textProfile.cellWidth = GetFontInt("KoreanTextTextCellWidth", 11);
-	textProfile.renderHeight = GetFontInt("KoreanTextTextRenderHeight", 14);
-	textProfile.yOffset = GetFontInt("KoreanTextTextYOffset", 0);
-	textProfile.fontWeight = GetFontInt("KoreanTextTextFontWeight", FW_NORMAL);
-	textProfile.extraBoldRadius = GetFontInt("KoreanTextTextExtraBold", 0);
-	LoadPrivateFontFile("KoreanTextTextFontFile");
-	LoadFace("KoreanTextTextFontFace", "Dotum", textProfile.fontFace);
+	textProfile.fontHeight = GetProfileInt("TEXT", "Size", "KoreanTextTextFontHeight", 11);
+	textProfile.cellWidth = GetProfileInt("TEXT", "CellWidth", "KoreanTextTextCellWidth", textProfile.fontHeight);
+	textProfile.renderHeight = GetProfileInt("TEXT", "RenderHeight", "KoreanTextTextRenderHeight", textProfile.fontHeight);
+	textProfile.yOffset = GetProfileInt("TEXT", "YOffset", "KoreanTextTextYOffset", 0);
+	textProfile.fontWeight = GetProfileInt("TEXT", "Weight", "KoreanTextTextFontWeight", FW_NORMAL);
+	textProfile.extraBoldRadius = GetProfileInt("TEXT", "ExtraBold", "KoreanTextTextExtraBold", 0);
+	LoadPrivateFontFile("TEXT", "KoreanTextTextFontFile");
+	LoadProfileFace("TEXT", "KoreanTextTextFontFace", "Dotum", textProfile.fontFace);
 
-	fmButtonProfile.fontHeight = GetFontInt("KoreanTextFontHeight", 19);
-	fmButtonProfile.cellWidth = GetFontInt("KoreanTextCellWidth", 19);
-	fmButtonProfile.renderHeight = GetFontInt("KoreanTextRenderHeight", 28);
-	fmButtonProfile.yOffset = GetFontInt("KoreanTextYOffset", 0);
-	fmButtonProfile.fontWeight = GetFontInt("KoreanTextFontWeight", GetFontInt("KoreanTextBold", 0) ? FW_BOLD : 900);
-	fmButtonProfile.extraBoldRadius = GetFontInt("KoreanTextExtraBold", (fmButtonProfile.fontWeight > 1000) ? 1 : 0);
-	LoadPrivateFontFile("KoreanTextFontFile");
-	LoadFace("KoreanTextFontFace", "Dotum", fmButtonProfile.fontFace);
+	fmButtonProfile.fontHeight = GetProfileInt("BUTTON", "Size", "KoreanTextFontHeight", 19);
+	fmButtonProfile.cellWidth = GetProfileInt("BUTTON", "CellWidth", "KoreanTextCellWidth", fmButtonProfile.fontHeight);
+	fmButtonProfile.renderHeight = GetProfileInt("BUTTON", "RenderHeight", "KoreanTextRenderHeight", fmButtonProfile.fontHeight);
+	fmButtonProfile.yOffset = GetProfileInt("BUTTON", "YOffset", "KoreanTextYOffset", 0);
+	fmButtonProfile.fontWeight = GetProfileInt("BUTTON", "Weight", "KoreanTextFontWeight", GetFontInt("Main", "KoreanTextBold", 0) ? FW_BOLD : 900);
+	fmButtonProfile.extraBoldRadius = GetProfileInt("BUTTON", "ExtraBold", "KoreanTextExtraBold", (fmButtonProfile.fontWeight > 1000) ? 1 : 0);
+	LoadPrivateFontFile("BUTTON", "KoreanTextFontFile");
+	LoadProfileFace("BUTTON", "KoreanTextFontFace", "Dotum", fmButtonProfile.fontFace);
 
-	gnwButtonProfile.fontHeight = GetFontInt("KoreanTextGnwFontHeight", 16);
-	gnwButtonProfile.cellWidth = GetFontInt("KoreanTextGnwCellWidth", 16);
-	gnwButtonProfile.renderHeight = GetFontInt("KoreanTextGnwRenderHeight", 20);
-	gnwButtonProfile.yOffset = GetFontInt("KoreanTextGnwYOffset", 0);
-	gnwButtonProfile.fontWeight = GetFontInt("KoreanTextGnwFontWeight", 700);
-	gnwButtonProfile.extraBoldRadius = GetFontInt("KoreanTextGnwExtraBold", 0);
-	LoadPrivateFontFile("KoreanTextGnwFontFile");
-	LoadFace("KoreanTextGnwFontFace", "Dotum", gnwButtonProfile.fontFace);
+	gnwButtonProfile.fontHeight = GetProfileInt("GNW", "Size", "KoreanTextGnwFontHeight", fmButtonProfile.fontHeight);
+	gnwButtonProfile.cellWidth = GetProfileInt("GNW", "CellWidth", "KoreanTextGnwCellWidth", fmButtonProfile.cellWidth);
+	gnwButtonProfile.renderHeight = GetProfileInt("GNW", "RenderHeight", "KoreanTextGnwRenderHeight", fmButtonProfile.renderHeight);
+	gnwButtonProfile.yOffset = GetProfileInt("GNW", "YOffset", "KoreanTextGnwYOffset", fmButtonProfile.yOffset);
+	gnwButtonProfile.fontWeight = GetProfileInt("GNW", "Weight", "KoreanTextGnwFontWeight", fmButtonProfile.fontWeight);
+	gnwButtonProfile.extraBoldRadius = GetProfileInt("GNW", "ExtraBold", "KoreanTextGnwExtraBold", fmButtonProfile.extraBoldRadius);
+	LoadPrivateFontFile("GNW", "KoreanTextGnwFontFile");
+	LoadProfileFace("GNW", "KoreanTextGnwFontFace", "Dotum", gnwButtonProfile.fontFace);
 
 	MakeJump(fo::funcoffs::FMtext_width_, fm_text_width_hook);
 	MakeJump(fo::funcoffs::GNW_text_width_, gnw_text_width_hook);
