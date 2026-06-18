@@ -46,6 +46,7 @@ static HFONT hFont = nullptr;
 static long hFontSize = 0;
 static long hFontTag = 0;
 static std::vector<std::wstring> loadedFontFiles;
+static const char* langFontIni = ".\\LangFont.ini";
 
 static bool IsCp949Lead(unsigned char ch) {
 	if (ch == 149) return false; // Fallout UI console bullet.
@@ -422,15 +423,23 @@ static __declspec(naked) void gnw_text_to_buf_hook() {
 	}
 }
 
+static int GetFontInt(const char* key, int defaultValue) {
+	return IniReader::GetInt("Main", key, defaultValue, langFontIni);
+}
+
+static std::string GetFontString(const char* key, const char* defaultValue) {
+	return IniReader::GetString("Main", key, defaultValue, langFontIni);
+}
+
 static void LoadFace(const char* key, const char* defaultFace, wchar_t* dest) {
-	auto face = IniReader::GetConfigString("Main", key, defaultFace);
+	auto face = GetFontString(key, defaultFace);
 	std::memset(dest, 0, sizeof(wchar_t) * LF_FACESIZE);
 	MultiByteToWideChar(CP_ACP, 0, face.c_str(), -1, dest, LF_FACESIZE);
 	dest[LF_FACESIZE - 1] = 0;
 }
 
 static void LoadPrivateFontFile(const char* key) {
-	auto path = IniReader::GetConfigString("Main", key, "");
+	auto path = GetFontString(key, "");
 	if (path.empty()) return;
 
 	std::wstring widePath(MAX_PATH, L'\0');
@@ -444,35 +453,35 @@ static void LoadPrivateFontFile(const char* key) {
 }
 
 void KoreanText::init() {
-	enabled = IniReader::GetConfigInt("Main", "KoreanText", 0) != 0;
+	enabled = GetFontInt("KoreanText", 0) != 0;
 	if (!enabled || !nonEngLang) return;
 
-	buttonFontThreshold = IniReader::GetConfigInt("Main", "KoreanTextButtonThreshold", 16);
+	buttonFontThreshold = GetFontInt("KoreanTextButtonThreshold", 16);
 
-	textProfile.fontHeight = IniReader::GetConfigInt("Main", "KoreanTextTextFontHeight", 11);
-	textProfile.cellWidth = IniReader::GetConfigInt("Main", "KoreanTextTextCellWidth", 11);
-	textProfile.renderHeight = IniReader::GetConfigInt("Main", "KoreanTextTextRenderHeight", 14);
-	textProfile.yOffset = IniReader::GetConfigInt("Main", "KoreanTextTextYOffset", 0);
-	textProfile.fontWeight = IniReader::GetConfigInt("Main", "KoreanTextTextFontWeight", FW_NORMAL);
-	textProfile.extraBoldRadius = IniReader::GetConfigInt("Main", "KoreanTextTextExtraBold", 0);
+	textProfile.fontHeight = GetFontInt("KoreanTextTextFontHeight", 11);
+	textProfile.cellWidth = GetFontInt("KoreanTextTextCellWidth", 11);
+	textProfile.renderHeight = GetFontInt("KoreanTextTextRenderHeight", 14);
+	textProfile.yOffset = GetFontInt("KoreanTextTextYOffset", 0);
+	textProfile.fontWeight = GetFontInt("KoreanTextTextFontWeight", FW_NORMAL);
+	textProfile.extraBoldRadius = GetFontInt("KoreanTextTextExtraBold", 0);
 	LoadPrivateFontFile("KoreanTextTextFontFile");
 	LoadFace("KoreanTextTextFontFace", "Dotum", textProfile.fontFace);
 
-	fmButtonProfile.fontHeight = IniReader::GetConfigInt("Main", "KoreanTextFontHeight", 19);
-	fmButtonProfile.cellWidth = IniReader::GetConfigInt("Main", "KoreanTextCellWidth", 19);
-	fmButtonProfile.renderHeight = IniReader::GetConfigInt("Main", "KoreanTextRenderHeight", 28);
-	fmButtonProfile.yOffset = IniReader::GetConfigInt("Main", "KoreanTextYOffset", 0);
-	fmButtonProfile.fontWeight = IniReader::GetConfigInt("Main", "KoreanTextFontWeight", IniReader::GetConfigInt("Main", "KoreanTextBold", 0) ? FW_BOLD : 900);
-	fmButtonProfile.extraBoldRadius = IniReader::GetConfigInt("Main", "KoreanTextExtraBold", (fmButtonProfile.fontWeight > 1000) ? 1 : 0);
+	fmButtonProfile.fontHeight = GetFontInt("KoreanTextFontHeight", 19);
+	fmButtonProfile.cellWidth = GetFontInt("KoreanTextCellWidth", 19);
+	fmButtonProfile.renderHeight = GetFontInt("KoreanTextRenderHeight", 28);
+	fmButtonProfile.yOffset = GetFontInt("KoreanTextYOffset", 0);
+	fmButtonProfile.fontWeight = GetFontInt("KoreanTextFontWeight", GetFontInt("KoreanTextBold", 0) ? FW_BOLD : 900);
+	fmButtonProfile.extraBoldRadius = GetFontInt("KoreanTextExtraBold", (fmButtonProfile.fontWeight > 1000) ? 1 : 0);
 	LoadPrivateFontFile("KoreanTextFontFile");
 	LoadFace("KoreanTextFontFace", "Dotum", fmButtonProfile.fontFace);
 
-	gnwButtonProfile.fontHeight = IniReader::GetConfigInt("Main", "KoreanTextGnwFontHeight", 16);
-	gnwButtonProfile.cellWidth = IniReader::GetConfigInt("Main", "KoreanTextGnwCellWidth", 16);
-	gnwButtonProfile.renderHeight = IniReader::GetConfigInt("Main", "KoreanTextGnwRenderHeight", 20);
-	gnwButtonProfile.yOffset = IniReader::GetConfigInt("Main", "KoreanTextGnwYOffset", 0);
-	gnwButtonProfile.fontWeight = IniReader::GetConfigInt("Main", "KoreanTextGnwFontWeight", 700);
-	gnwButtonProfile.extraBoldRadius = IniReader::GetConfigInt("Main", "KoreanTextGnwExtraBold", 0);
+	gnwButtonProfile.fontHeight = GetFontInt("KoreanTextGnwFontHeight", 16);
+	gnwButtonProfile.cellWidth = GetFontInt("KoreanTextGnwCellWidth", 16);
+	gnwButtonProfile.renderHeight = GetFontInt("KoreanTextGnwRenderHeight", 20);
+	gnwButtonProfile.yOffset = GetFontInt("KoreanTextGnwYOffset", 0);
+	gnwButtonProfile.fontWeight = GetFontInt("KoreanTextGnwFontWeight", 700);
+	gnwButtonProfile.extraBoldRadius = GetFontInt("KoreanTextGnwExtraBold", 0);
 	LoadPrivateFontFile("KoreanTextGnwFontFile");
 	LoadFace("KoreanTextGnwFontFace", "Dotum", gnwButtonProfile.fontFace);
 
