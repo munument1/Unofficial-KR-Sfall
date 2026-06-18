@@ -21,8 +21,8 @@
 
 ## 설치 방법 (Installation)
 
-- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일과 `data\fonts\korean\` 폴더**(폰트 파일 포함)가 함께 포함되어 있습니다.
-- `ddraw.dll` 파일과 `data` 폴더를 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 그대로 복사 및 덮어씌웁니다.
+- **Unofficial-KR-Sfall** 배포 패키지에는 **`ddraw.dll` 파일과 `LangFont.ini` 파일**이 함께 포함되어 있습니다.
+- `ddraw.dll` 파일과 `LangFont.ini` 파일을 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 그대로 복사 및 덮어씌웁니다.
 
 ### 참고: 기존(순정) sfall 설치 방법
 - [sfall 공식 릴리즈 아카이브](https://sourceforge.net/projects/sfall/files/)에서 `sfall_*.7z` 파일을 다운로드합니다.
@@ -31,10 +31,12 @@
 
 ## 설정법 (Configuration)
 
-한글 폰트 렌더링 및 번역 데이터를 정상적으로 불러오기 위해서는 게임 디렉터리에 있는 두 개의 설정 파일을 다음과 같이 수정해야 합니다:
+한글 폰트 렌더링 및 번역 데이터를 정상적으로 불러오기 위해서는 게임 디렉터리에 있는 설정 파일을 다음과 같이 준비해야 합니다:
 
-### 1. `ddraw.ini` 설정 추가
-텍스트 편집기(메모장 등)로 `ddraw.ini` 파일을 열어 `[Main]` 섹션을 찾은 후, 아래 내용을 추가하여 한글 텍스트 렌더러 활성화, GDI 폰트명 및 렌더링 영역 크기를 설정합니다:
+### 1. `LangFont.ini` 설정
+`LangFont.ini` 파일을 `ddraw.dll`과 같은 게임 루트 디렉터리(`fallout2.exe`가 있는 폴더)에 둡니다. `ddraw.ini`에는 한글 폰트 설정을 추가하지 않습니다.
+
+Windows에 설치된 폰트를 사용하려면 `*FontFile` 값을 비워두고 `*FontFace`에 설치된 폰트 이름을 입력합니다. 별도 폰트 파일을 사용하려면 `*FontFile`에 게임 폴더 기준 상대 경로 또는 절대 경로를 입력합니다.
 
 ```ini
 [Main]
@@ -43,28 +45,41 @@ KoreanText=1
 KoreanTextButtonThreshold=16
 
 ; 1. Small Font (Dialog text, log messages)
-KoreanTextTextFontFile=data\fonts\korean\NanumSquareNeo-aLt.ttf
-KoreanTextTextFontFace=NanumSquare Neo Light
+KoreanTextTextFontFile=
+KoreanTextTextFontFace=Malgun Gothic
 KoreanTextTextFontHeight=10
 KoreanTextTextCellWidth=10
 KoreanTextTextRenderHeight=11
+KoreanTextTextYOffset=0
 KoreanTextTextFontWeight=400
+KoreanTextTextExtraBold=0
 
 ; 2. Large UI Font (Dialog headers, standard buttons)
-KoreanTextFontFile=data\fonts\korean\ChungjuKimSaeng.ttf
-KoreanTextFontFace=ChungjuKimSaeng TTF
+KoreanTextFontFile=
+KoreanTextFontFace=Malgun Gothic
 KoreanTextFontHeight=17
 KoreanTextCellWidth=19
 KoreanTextRenderHeight=25
+KoreanTextYOffset=0
 KoreanTextFontWeight=700
+KoreanTextExtraBold=0
 
 ; 3. GNW UI Font (Main Menu titles, custom buttons)
-KoreanTextGnwFontFile=data\fonts\korean\ChungjuKimSaeng.ttf
-KoreanTextGnwFontFace=ChungjuKimSaeng TTF
+KoreanTextGnwFontFile=
+KoreanTextGnwFontFace=Malgun Gothic
 KoreanTextGnwFontHeight=17
 KoreanTextGnwCellWidth=19
 KoreanTextGnwRenderHeight=25
+KoreanTextGnwYOffset=0
 KoreanTextGnwFontWeight=700
+KoreanTextGnwExtraBold=0
+```
+
+예를 들어 게임 폴더 밖에 있는 폰트 파일을 직접 지정하려면 다음처럼 절대 경로를 사용할 수 있습니다:
+
+```ini
+KoreanTextTextFontFile=C:\Windows\Fonts\malgun.ttf
+KoreanTextTextFontFace=Malgun Gothic
 ```
 
 ### 2. `fallout2.cfg` 설정 수정
@@ -80,13 +95,13 @@ language=korean
 
 ## 제거 방법 (Uninstallation)
 
-Fallout 설치 디렉터리에서 `ddraw.dll`, `ddraw.ini`, `sfall.dat` 파일을 삭제하고, `mods` 폴더 내의 `sfall-mods.ini` 파일을 삭제하십시오.
+Fallout 설치 디렉터리에서 `ddraw.dll`, `LangFont.ini`, `sfall.dat` 파일을 삭제하고, `mods` 폴더 내의 `sfall-mods.ini` 파일을 삭제하십시오.
 
 ---
 
 ## 사용 방법 (Usage)
 
-이 모드는 텍스트 편집기(메모장 등)로 열 수 있는 `ddraw.ini` 및 `sfall-mods.ini` 파일을 통해 설정할 수 있습니다. 각 설정 옵션에 대한 상세한 설명은 해당 파일들의 주석에 적혀 있습니다. 주석에서 DX 스캔코드(scancode)를 참조하는 경우, 전체 코드 목록은 아래 링크에서 확인할 수 있습니다:
+이 모드는 텍스트 편집기(메모장 등)로 열 수 있는 `ddraw.ini`, `LangFont.ini` 및 `sfall-mods.ini` 파일을 통해 설정할 수 있습니다. 한글 폰트 렌더러 설정은 `LangFont.ini`에서만 읽습니다. 각 설정 옵션에 대한 상세한 설명은 해당 파일들의 주석에 적혀 있습니다. 주석에서 DX 스캔코드(scancode)를 참조하는 경우, 전체 코드 목록은 아래 링크에서 확인할 수 있습니다:
 https://kippykip.com/b3ddocs/commands/scancodes.htm
 
 수정되지 않은 기본 `ddraw.ini` 파일을 사용하는 초기 상태에서는 마우스 가운데 버튼으로 무기 전환이 가능하며, 마우스 휠을 통해 위/아래 방향키가 연동되는 모든 메뉴를 스크롤할 수 있습니다. **Ctrl**을 누른 상태에서 숫자 키패드 0~6(Num Lock 해제 상태)을 누르면 게임 속도가 조절됩니다. **왼쪽 Ctrl**을 누른 채로 인벤토리 아이템을 클릭하면 인벤토리 목록 간에 아이템을 한 번에 이동할 수 있습니다. **왼쪽 Shift**를 누르면 바닥에 있는 아이템들이 강조 표시되며, 키를 꾹 누르고 있으면 한 번에 아이템 묶음 전체를 이동할 수 있습니다. 스크립트 확장 엔진 및 각종 엔진 수정 기능들도 기본적으로 활성화되어 있습니다. 개발자가 원래 의도하지 않은 방식으로 게임 플레이를 변경하는 대부분의 비바닐라적 옵션들은 기본적으로 비활성화되어 있습니다.
@@ -100,7 +115,7 @@ https://kippykip.com/b3ddocs/commands/scancodes.htm
 
 ### 필수 요구사항 (Prerequisites)
 * **"C++용 Windows XP 지원"** 구성요소가 포함된 Visual Studio 2015. 만약 Visual Studio 2017/2019/2022 버전을 사용 중이라면 **"VC++ 2015.3 v14.00 (v140) 데스크톱용 도구 세트"** 구성요소도 추가로 설치해야 합니다.
-* [DirectX SDK (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=6812). 또한, DXSDK February 2010의 `ddraw.lib` 파일과 DXSDK August 2007의 `dinput.lib` 파일이 추가로 필요합니다. 이 두 파일은 [DirectX SDK Collection 저장소](https://github.com/NovaRain/DXSDK_Collection)에서 다운로드할 수 있습니다.
+* [DirectX SDK (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=6812). 또한, 구버전 DirectX SDK의 `ddraw.lib` 및 `dinput.lib` 파일이 추가로 필요합니다. DirectX SDK April 2007의 `Lib\x86\ddraw.lib`와 `Lib\x86\dinput.lib`로 빌드할 수 있으며, 이 파일들은 [DirectX SDK Collection 저장소](https://github.com/NovaRain/DXSDK_Collection)에서도 다운로드할 수 있습니다.
 * [DirectX Runtime (June 2010)](https://www.microsoft.com/en-us/download/details.aspx?id=8109). DirectX SDK 설치 관리자를 통해서도 설치할 수 있습니다.
 
 ### 빌드 단계 (Steps)
